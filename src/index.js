@@ -1,8 +1,8 @@
 'use strict';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TextField from 'components/TextField/TextField';
+import IndexPage from 'pages/index/IndexPage';
 
 let container = document.getElementById('container');
 
-ReactDOM.render(<TextField />, container);
+ReactDOM.render(<IndexPage />, container);

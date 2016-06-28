@@ -85,7 +85,8 @@ module.exports = {
         alias: {
             root: PATHS.srcPath,
             app: PATHS.srcPath,
-            components: PATHS.srcPath + '/components/'
+            components: PATHS.srcPath + '/components/',
+            pages: PATHS.srcPath + '/pages/',
         }
     },
     plugins: [

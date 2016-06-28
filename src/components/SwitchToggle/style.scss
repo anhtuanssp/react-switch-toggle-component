@@ -1,0 +1,111 @@
+$transition-time: 0.4s;
+
+$large-configs: (
+  inputWidth: 120px,
+  inputHeight: 60px,
+  switchDiameter: 52px,
+  marginLeft: 64px
+);
+
+$medium-configs: (
+  inputWidth: 60px,
+  inputHeight: 30px,
+  switchDiameter: 26px,
+  marginLeft: 30px
+);
+
+$small-configs: (
+  inputWidth: 30px,
+  inputHeight: 15px,
+  switchDiameter: 10px,
+  marginLeft: 16px
+);
+
+$style-1: (
+  bgBorderInputActive: #8ce196,
+  bgSwitchDefault: #dddddd,
+  bgSwitchActive: #8ce196,
+  bgInputDefault: #fff,
+  bgInputActive: #fff
+);
+
+@mixin config-switch-toggle($configs, $style) {
+    input.cmn-toggle-round-flat + label {
+        padding: 2px;
+        width: #{map-get($configs, inputWidth)};
+        height: #{map-get($configs, inputHeight)};
+        border-radius: #{map-get($configs, inputHeight)};
+        background-color: #{map-get($style, bgSwitchDefault)};
+        transition: background $transition-time;
+    }
+    input.cmn-toggle-round-flat + label:before,
+    input.cmn-toggle-round-flat + label:after {
+        display: block;
+        position: absolute;
+        content: "";
+    }
+    input.cmn-toggle-round-flat + label:before {
+        top: 2px;
+        left: 2px;
+        bottom: 2px;
+        right: 2px;
+        background-color: #{map-get($style, bgInputDefault)};
+        border-radius: #{map-get($configs, inputHeight)};
+        transition: background $transition-time;
+    }
+    input.cmn-toggle-round-flat + label:after {
+        top: 4px;
+        left: 4px;
+        bottom: 4px;
+        width: #{map-get($configs, switchDiameter)};
+        border-radius: #{map-get($configs, switchDiameter)};
+        background-color: #{map-get($style, bgSwitchDefault)};
+        transition: margin $transition-time, background $transition-time;
+    }
+
+    input.cmn-toggle-round-flat:checked + label:before {
+        background-color: #{map-get($style, bgInputActive)};
+    }
+    input.cmn-toggle-round-flat:checked + label {
+        background-color: #{map-get($style, bgBorderInputActive)};
+    }
+    input.cmn-toggle-round-flat:checked + label:after {
+        margin-left: #{map-get($configs, marginLeft)};
+        background-color: #{map-get($style, bgSwitchActive)};
+    }
+}
+
+
+.switch {
+    display: table-cell;
+    vertical-align: middle;
+    padding: 10px;
+
+    .cmn-toggle {
+        position: absolute;
+        margin-left: -9999px;
+        visibility: hidden;
+    }
+    .cmn-toggle + label {
+        display: block;
+        position: relative;
+        cursor: pointer;
+        outline: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    &.large {
+        @include config-switch-toggle($large-configs, $style-1);
+    }
+
+    &.medium {
+        @include config-switch-toggle($medium-configs, $style-1);
+    }
+
+    &.small {
+        @include config-switch-toggle($small-configs, $style-1);
+    }
+}
