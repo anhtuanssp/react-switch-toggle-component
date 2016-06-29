@@ -9,12 +9,14 @@ class SwitchToggle extends React.Component {
     static propTypes = {
         onChange: React.PropTypes.func,
         size: React.PropTypes.string,
-        id: React.PropTypes.string.isRequired
+        id: React.PropTypes.string.isRequired,
+        style: React.PropTypes.string
     };
 
     static defaultProps = {
         size: 'large',
-        checked: false
+        checked: false,
+        style: 'style-1'
     };
 
     constructor(props) {
@@ -36,7 +38,7 @@ class SwitchToggle extends React.Component {
     render() {
 
         let rootProps = {
-            className: `${this.rootClassName} ${this.props.size}`
+            className: `${this.rootClassName} ${this.props.style} ${this.props.size}`
         };
 
         let inputProps = {

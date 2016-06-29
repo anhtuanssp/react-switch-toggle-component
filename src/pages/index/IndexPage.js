@@ -20,7 +20,7 @@ class IndexPage extends React.Component {
 
     render() {
         return (
-            <SwitchToggle size="small" id="test-1" ref="switchTest" onChange={this.onChange} />
+            <SwitchToggle size="medium" id="test-1" ref="switchTest" onChange={this.onChange} />
         )
     }
 }

@@ -97,15 +97,19 @@ $style-1: (
         user-select: none;
     }
 
-    &.large {
-        @include config-switch-toggle($large-configs, $style-1);
+    &.style-1 {
+        &.large {
+            @include config-switch-toggle($large-configs, $style-1);
+        }
+
+        &.medium {
+            @include config-switch-toggle($medium-configs, $style-1);
+        }
+
+        &.small {
+            @include config-switch-toggle($small-configs, $style-1);
+        }
     }
 
-    &.medium {
-        @include config-switch-toggle($medium-configs, $style-1);
-    }
-
-    &.small {
-        @include config-switch-toggle($small-configs, $style-1);
-    }
+    
 }
