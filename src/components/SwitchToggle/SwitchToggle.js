@@ -46,7 +46,8 @@ class SwitchToggle extends React.Component {
             ref: (elem) => this.input = elem,
             className: 'cmn-toggle cmn-toggle-round-flat',
             type: 'checkbox',
-            check: this.props.checked,
+            // should remove this prop, and implement set value for input
+            // check: this.props.checked, 
             onChange: this.handleChange
         };
 
