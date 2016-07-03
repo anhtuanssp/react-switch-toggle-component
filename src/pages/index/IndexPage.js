@@ -11,16 +11,20 @@ class IndexPage extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.refs.switchTest.getValue());
+        console.log(this.refs.switchTest.state.checked);
+        console.log(this.refs.switchTest2.state.checked);
     }
 
-    onChange = () => {
-        console.log(this.refs.switchTest.getValue());
+    onChange = (checked) => {
+        console.log(checked);
     }
 
     render() {
         return (
-            <SwitchToggle size="medium" id="test-1" ref="switchTest" onChange={this.onChange} />
+            <div>
+                <SwitchToggle size="medium" id="test-1" ref="switchTest" checked={true} onChange={this.onChange} />
+                <SwitchToggle size="small" id="test-2" ref="switchTest2" checked={false} onChange={this.onChange} />
+            </div>
         )
     }
 }
