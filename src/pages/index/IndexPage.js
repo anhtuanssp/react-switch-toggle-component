@@ -19,11 +19,21 @@ class IndexPage extends React.Component {
         console.log(checked);
     }
 
+    onClick = () => {
+        this.refs.switchTest.setValue(true);
+    }
+
+    onTurnOff = () => {
+        this.refs.switchTest.setValue(false);
+    }
+
     render() {
         return (
             <div>
                 <SwitchToggle size="medium" id="test-1" ref="switchTest" checked={true} onChange={this.onChange} />
                 <SwitchToggle size="small" id="test-2" ref="switchTest2" checked={false} onChange={this.onChange} />
+                <button onClick={this.onClick}>turn on</button>
+                <button onClick={this.onTurnOff}>turn off</button>
             </div>
         )
     }

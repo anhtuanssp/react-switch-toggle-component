@@ -19,8 +19,6 @@ class SwitchToggle extends React.Component {
         style: 'style-1'
     };
 
-
-
     constructor(props) {
         super(props);
         this.displayName = 'SwitchToggle';
@@ -32,6 +30,12 @@ class SwitchToggle extends React.Component {
     
     getValue() {
         return this.input ? this.input.checked : undefined;
+    }
+
+    setValue(value) {
+        if(value === null || typeof(value) !== 'boolean') 
+            throw new Error('setValue(): arg must be boolean.');
+        this.setState({ checked: value });
     }
 
     handleChange = (e) => {
