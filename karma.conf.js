@@ -1,66 +1,101 @@
-/* eslint-disable */
+var path = require('path');
+const PATHS = {
+    app: path.join(__dirname, './src'),
+};
 
-var webpack = require('webpack');
+module.exports = function(config) {
+    config.set({
+        basePath: '',
+        frameworks: ['jasmine'],
+        files: [
+            'test/**/*.js'
+        ],
 
-var coverage;
-var reporters;
-if (process.env.CONTINUOUS_INTEGRATION) {
-  coverage = {
-    type: 'lcov',
-    dir: 'coverage/'
-  };
-  reporters = ['coverage', 'coveralls'];
-}
-else {
-  coverage = {
-    type: 'html',
-    dir: 'coverage/'
-  };
-  reporters = ['progress', 'coverage'];
-}
+        preprocessors: {
+            // add webpack as preprocessor
+            'src/**/*.js': ['webpack', 'sourcemap', 'coverage'],
+            'test/**/*.js': ['webpack', 'sourcemap', 'coverage']
+        },
 
-module.exports = function (config) {
-  config.set({
-    browsers: ['Firefox'],
-    browserNoActivityTimeout: 30000,
-    frameworks: ['mocha', 'chai', 'sinon-chai'],
-    files: ['tests.webpack.js'],
-    preprocessors: {'tests.webpack.js': ['webpack', 'sourcemap']},
-    reporters: reporters,
-    coverageReporter: coverage,
-    webpack: {
-      devtool: 'inline-source-map',
-      module: {
-        loaders: [
-          // TODO: fix sourcemaps
-          // see: https://github.com/deepsweet/isparta-loader/issues/1
-          {
-            test: /\.js$|.jsx$/,
-            loader: 'babel',
-            exclude: /node_modules/
-          },
-          {
-            test: /\.js$|.jsx$/,
-            loader: 'isparta?{babel: {stage: 0}}',
-            exclude: /node_modules|test|utils/
-          }
-        ]
-      },
-      plugins: [
-        new webpack.DefinePlugin({
-          'process.env': {
-            BROWSER: JSON.stringify(true),
-            NODE_ENV: JSON.stringify('test')
-          }
-        })
-      ],
-      resolve: {
-        extensions: ['', '.js', '.jsx'],
-        modulesDirectories: ['node_modules', 'src']
-      }
-    },
-    webpackServer: {
-      noInfo: true
-    }
-  });
+        // optionally, configure the reporter
+        coverageReporter: {
+            type: 'html',
+            dir: 'coverage/'
+        },
+
+        webpack: { //kind of a copy of your webpack config
+            devtool: 'inline-source-map', //just do inline source maps instead of the default
+            module: {
+                loaders: [{
+                    test: /\.js$/,
+                    loader: 'babel',
+                    exclude: path.resolve(__dirname, 'node_modules'),
+                    loader: 'babel-loader',
+                    query: {
+                        presets: ['airbnb', 'es2015', 'react', 'stage-1']
+                    }
+                }, {
+                    test: /\.json$/,
+                    loader: 'json',
+                }, {
+                    test: /\.html/,
+                    loader: 'html'
+                }, {
+                    test: /\.css$/,
+                    loader: 'style-loader!css-loader!postcss-loader'
+                }, {
+                    test: /\.sass/,
+                    loader: 'style-loader!css-loader!postcss-loader!sass-loader?outputStyle=expanded&indentedSyntax'
+                }, {
+                    test: /\.scss/,
+                    loaders: ['style', 'css?sourceMap', 'sass?sourceMap']
+                }, {
+                    test: /\.(png|jpg|gif)(\?[a-z0-9]+)?$/,
+                    loader: 'url-loader?limit=8192'
+                }, {
+                    test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                    loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+                }, {
+                    test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                    loader: 'file-loader'
+                }]
+            },
+            resolve: {
+                alias: {
+                    app: PATHS.app
+                }
+            },
+            externals: {
+                'react/lib/ExecutionEnvironment': true,
+                'react/lib/ReactContext': true
+            }
+        },
+
+        webpackServer: {
+            noInfo: true //please don't spam the console when running in karma!
+        },
+
+        plugins: [
+            'karma-webpack',
+            'karma-jasmine',
+            'karma-sourcemap-loader',
+            'karma-chrome-launcher',
+            'karma-phantomjs-launcher',
+            'karma-coverage'
+        ],
+
+        babelPreprocessor: {
+            options: {
+                presets: ['airbnb']
+            }
+        },
+        // coverage reporter generates the coverage
+        reporters: ['progress', 'coverage'],
+        port: 9876,
+        colors: true,
+        logLevel: config.LOG_INFO,
+        autoWatch: true,
+        browsers: ['Chrome'],
+        singleRun: false,
+    })
 };
