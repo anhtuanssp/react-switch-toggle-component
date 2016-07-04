@@ -1,8 +1,10 @@
+'use strict';
+
 require('babel-register')();
 
-var jsdom = require('jsdom').jsdom;
+let jsdom = require('jsdom').jsdom;
 
-var exposedProperties = ['window', 'navigator', 'document'];
+let exposedProperties = ['window', 'navigator', 'document'];
 
 global.document = jsdom('');
 global.window = document.defaultView;

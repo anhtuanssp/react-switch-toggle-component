@@ -8,6 +8,13 @@
     "start": "node devServer.js"
   },
   "author": "David Nguyen",
+  "contributors": [
+    { 
+      "name" : "Tuan Truong", 
+      "email" : "anhtuan.ssp@gmail.com", 
+      "url" : "https://github.com/anhtuanssp"
+    }
+  ],
   "license": "MIT",
   "dependencies": {
     "core-js": "^2.4.0",

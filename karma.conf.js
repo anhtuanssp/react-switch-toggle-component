@@ -1,4 +1,6 @@
-var path = require('path');
+'use strict';
+
+let path = require('path');
 const PATHS = {
     app: path.join(__dirname, './src'),
 };
@@ -72,7 +74,7 @@ module.exports = function(config) {
         },
 
         webpackServer: {
-            noInfo: true //please don't spam the console when running in karma!
+            noInfo: true // please don't spam the console when running in karma!
         },
 
         plugins: [

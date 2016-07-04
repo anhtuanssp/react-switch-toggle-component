@@ -1,5 +1,11 @@
+'use strict';
+
 import React from 'react';
-import { shallow, mount, render } from 'enzyme';
+import { 
+    shallow, 
+    mount, 
+    render 
+} from 'enzyme';
 import SwitchToggle from 'app/components/SwitchToggle/SwitchToggle';
 
 const SIZE = {
