@@ -4,30 +4,55 @@ let path = require('path');
 const PATHS = {
     app: path.join(__dirname, './src'),
 };
-
+var coverage;
+var reporters;
+if (process.env.CONTINUOUS_INTEGRATION) {
+  coverage = {
+    type: 'lcov',
+    dir: 'coverage/'
+  };
+  reporters = ['coverage', 'coveralls'];
+}
+else {
+  coverage = {
+    type: 'html',
+    dir: 'coverage/'
+  };
+  reporters = ['progress', 'coverage'];
+}
 module.exports = function(config) {
     config.set({
         basePath: '',
         frameworks: ['jasmine'],
         files: [
-            'test/**/*.js'
+            'test/selectToggle.js'
         ],
 
         preprocessors: {
             // add webpack as preprocessor
-            'src/**/*.js': ['webpack', 'sourcemap', 'coverage'],
-            'test/**/*.js': ['webpack', 'sourcemap', 'coverage']
+            // 'src/**/*.js': ['webpack', 'coverage'],
+            'test/**/*.js': ['webpack', 'coverage']
         },
 
         // optionally, configure the reporter
-        coverageReporter: {
-            type: 'html',
-            dir: 'coverage/'
-        },
+        coverageReporter: coverage,
 
         webpack: { //kind of a copy of your webpack config
             devtool: 'inline-source-map', //just do inline source maps instead of the default
             module: {
+                // *optional* babel options: isparta will use it as well as babel-loader
+                babel: {
+                    presets: ['es2015', 'stage-1', 'react']
+                },
+                // *optional* isparta options: istanbul behind isparta will use it
+                isparta: {
+                    embedSource: true,
+                    noAutoWrap: true,
+                    // these babel options will be passed only to isparta and not to babel-loader
+                    babel: {
+                        presets: ['es2015', 'stage-1', 'react']
+                    }
+                },
                 loaders: [{
                     test: /\.js$/,
                     loader: 'babel',
@@ -36,6 +61,10 @@ module.exports = function(config) {
                     query: {
                         presets: ['airbnb', 'es2015', 'react', 'stage-1']
                     }
+                }, {
+                    test: /\.js$/,
+                    include: path.resolve('app'),
+                    loader: 'isparta'
                 }, {
                     test: /\.json$/,
                     loader: 'json',
@@ -84,7 +113,8 @@ module.exports = function(config) {
             'karma-chrome-launcher',
             'karma-firefox-launcher',
             'karma-phantomjs-launcher',
-            'karma-coverage'
+            'karma-coverage',
+            'karma-coveralls'
         ],
 
         babelPreprocessor: {
@@ -93,12 +123,12 @@ module.exports = function(config) {
             }
         },
         // coverage reporter generates the coverage
-        reporters: ['progress', 'coverage'],
+        reporters: reporters,
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
-        browsers: ['Chrome', 'Firefox'],
+        browsers: ['Chrome'],
         singleRun: false,
     })
 };
