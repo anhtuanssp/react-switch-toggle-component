@@ -76,12 +76,7 @@ describe("switch toggle button", function() {
         };
 
         const wrapper = mount(<SwitchToggle {...prop} />);
-        expect(wrapper.html()).toEqual(
-          `<div class="switch style-1 medium"><input type="checkbox" id="test-1" class="cmn-toggle cmn-toggle-round-flat" value="on" name=""><label for="test-1"></label></div>`
-        );
-        expect(wrapper.find('input').html()).toEqual(
-          `<input type="checkbox" id="test-1" class="cmn-toggle cmn-toggle-round-flat" value="on" name="">`
-        );
+        expect(wrapper.find('input').hasClass('cmn-toggle cmn-toggle-round-flat')).toEqual(true);
         expect(wrapper.find('label').html()).toEqual(
           `<label for="test-1"></label>`
         );
@@ -220,6 +215,21 @@ describe("switch toggle button", function() {
             style: 23
         };
         mount(<SwitchToggle {...prop} />)
+    });
+    it("render button and get default props size", function(){
+        const prop = {
+            id: 'test-1',
+            ref: 'switchTest'
+        };
+        const app = mount(<SwitchToggle {...prop} />);
+        expect(app.prop('size')).toEqual(SIZE.large);
+    });
+    it("render button and get default props style", function(){
+        const prop = {
+            ref: 'switchTest'
+        };
+        const app = mount(<SwitchToggle {...prop} />);
+        expect(app.prop('style')).toEqual('style-1');
     });
     afterEach(() => {
         expect(warningUtil.propWarnings().length).toBe(0);
