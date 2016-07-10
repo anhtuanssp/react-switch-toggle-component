@@ -10,13 +10,12 @@ module.exports = function(config) {
         basePath: '',
         frameworks: ['jasmine'],
         files: [
-            'test/**/*.js'
+            'tests.webpack.js'
         ],
 
         preprocessors: {
             // add webpack as preprocessor
-            'src/**/*.js': ['webpack', 'sourcemap', 'coverage'],
-            'test/**/*.js': ['webpack', 'sourcemap', 'coverage']
+            'tests.webpack.js': ['webpack', 'sourcemap']
         },
 
         // optionally, configure the reporter
@@ -60,7 +59,14 @@ module.exports = function(config) {
                 }, {
                     test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                     loader: 'file-loader'
-                }]
+                }],
+                postLoaders: [
+                    { //delays coverage til after tests are run, fixing transpiled source coverage error
+                        test: /\.js$/,
+                        exclude: /(test|node_modules)\//,
+                        loader: 'istanbul-instrumenter'
+                    } 
+                ]
             },
             resolve: {
                 alias: {
@@ -69,7 +75,8 @@ module.exports = function(config) {
             },
             externals: {
                 'react/lib/ExecutionEnvironment': true,
-                'react/lib/ReactContext': true
+                'react/lib/ReactContext': true,
+                'react/addons': true,
             }
         },
 
@@ -92,13 +99,14 @@ module.exports = function(config) {
                 presets: ['airbnb']
             }
         },
+
         // coverage reporter generates the coverage
-        reporters: ['progress', 'coverage'],
+        reporters: ['coverage'],
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
-        browsers: ['Chrome', 'Firefox'],
-        singleRun: false,
+        browsers: ['Chrome'],
+        singleRun: true,
     })
 };
