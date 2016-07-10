@@ -1,111 +1,4 @@
 'use strict';
-/* eslint-disable */
-
-var webpack = require('webpack');
-
-// let path = require('path');
-// const PATHS = {
-//     app: path.join(__dirname, './src'),
-// };
-
-// var coverage;
-// var reporters;
-// if (process.env.CONTINUOUS_INTEGRATION) {
-//     coverage = {
-//         type: 'lcov',
-//         dir: 'coverage/'
-//     };
-//     reporters = ['coverage', 'coveralls'];
-// } else {
-//     coverage = {
-//         type: 'html',
-//         dir: 'coverage/'
-//     };
-//     reporters = ['progress', 'coverage'];
-// }
-
-// module.exports = function(config) {
-//     config.set({
-//         browsers: ['Firefox'],
-//         browserNoActivityTimeout: 30000,
-//         frameworks: ['jasmine'],
-//         files: [
-//             './test/**/*.js'
-//         ],
-//         preprocessors: {
-//             './src/components/SwitchToggle/SwitchToggle.js': ['webpack', 'sourcemap', 'coverage'],
-//         },
-//         reporters: reporters,
-//         coverageReporter: coverage,
-//         webpack: {
-//             devtool: 'inline-source-map',
-//             module: {
-//                 loaders: [
-//                     // TODO: fix sourcemaps
-//                     // see: https://github.com/deepsweet/isparta-loader/issues/1
-//                     {
-//                         test: /\.js$|.jsx$/,
-//                         loader: 'babel',
-//                         query: {
-//                             presets: ['es2015', 'react', 'stage-1']
-//                         },
-//                         exclude: /node_modules/
-//                     }, {
-//                         test: /\.js$|.jsx$/,
-//                         loader: 'isparta?{babel: {stage: 1}}',
-//                         include: path.resolve('app'),
-//                         exclude: /node_modules|test|utils/
-//                     }, {
-//                         test: /\.json$/,
-//                         loader: 'json',
-//                     }, {
-//                         test: /\.html/,
-//                         loader: 'html'
-//                     }, {
-//                         test: /\.css$/,
-//                         loader: 'style-loader!css-loader!postcss-loader'
-//                     }, {
-//                         test: /\.sass/,
-//                         loader: 'style-loader!css-loader!postcss-loader!sass-loader?outputStyle=expanded&indentedSyntax'
-//                     }, {
-//                         test: /\.scss/,
-//                         loaders: ['style', 'css?sourceMap', 'sass?sourceMap']
-//                     }
-//                 ]
-//             },
-//             plugins: [
-//                 'karma-webpack',
-//                 'karma-jasmine',
-//                 'karma-sourcemap-loader',
-//                 'karma-chrome-launcher',
-//                 'karma-firefox-launcher',
-//                 'karma-phantomjs-launcher',
-//                 'karma-coverage'
-//             ],
-//             babelPreprocessor: {
-//                 options: {
-//                     presets: ['airbnb']
-//                 }
-//             },
-//             resolve: {
-//                 extensions: ['', '.js', '.jsx'],
-//                 modulesDirectories: ['node_modules', 'src'],
-//                 alias: {
-//                     app: PATHS.app
-//                 }
-//             },
-//             externals: {
-//                 'react/lib/ExecutionEnvironment': true,
-//                 'react/lib/ReactContext': 'window',
-//                 'cheerio': 'window',
-//                 'react/addons': true, // important!!
-//             }
-//         },
-//         webpackServer: {
-//             noInfo: true
-//         }
-//     });
-// };
 
 let path = require('path');
 const PATHS = {
@@ -117,14 +10,18 @@ module.exports = function(config) {
         basePath: '',
         frameworks: ['jasmine'],
         files: [
-            'src/**/*.js',
-            'test/**/*.js'
+            'tests.webpack.js'
         ],
 
         preprocessors: {
             // add webpack as preprocessor
-            'src/**/*.js': ['webpack', 'sourcemap', 'coverage'],
-            'test/**/*.js': ['webpack', 'sourcemap', 'coverage']
+            'tests.webpack.js': ['webpack', 'sourcemap']
+        },
+
+        // optionally, configure the reporter
+        coverageReporter: {
+            type: 'html',
+            dir: 'coverage/'
         },
 
         webpack: { //kind of a copy of your webpack config
@@ -134,24 +31,42 @@ module.exports = function(config) {
                     test: /\.js$/,
                     loader: 'babel',
                     exclude: path.resolve(__dirname, 'node_modules'),
+                    loader: 'babel-loader',
                     query: {
                         presets: ['airbnb', 'es2015', 'react', 'stage-1']
                     }
                 }, {
-                    test: /\.js$|.jsx$/,
-                    loader: 'isparta?{babel: {stage: 1}}',
-                    include: path.resolve('app'),
-                    exclude: /node_modules|test|utils/
-                }, {
                     test: /\.json$/,
                     loader: 'json',
                 }, {
-                    test: /\.json$/,
-                    loader: 'json',
+                    test: /\.html/,
+                    loader: 'html'
+                }, {
+                    test: /\.css$/,
+                    loader: 'style-loader!css-loader!postcss-loader'
+                }, {
+                    test: /\.sass/,
+                    loader: 'style-loader!css-loader!postcss-loader!sass-loader?outputStyle=expanded&indentedSyntax'
                 }, {
                     test: /\.scss/,
                     loaders: ['style', 'css?sourceMap', 'sass?sourceMap']
-                }]
+                }, {
+                    test: /\.(png|jpg|gif)(\?[a-z0-9]+)?$/,
+                    loader: 'url-loader?limit=8192'
+                }, {
+                    test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                    loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+                }, {
+                    test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                    loader: 'file-loader'
+                }],
+                postLoaders: [
+                    { //delays coverage til after tests are run, fixing transpiled source coverage error
+                        test: /\.js$/,
+                        exclude: /(test|node_modules)\//,
+                        loader: 'istanbul-instrumenter'
+                    } 
+                ]
             },
             resolve: {
                 alias: {
@@ -161,13 +76,12 @@ module.exports = function(config) {
             externals: {
                 'react/lib/ExecutionEnvironment': true,
                 'react/lib/ReactContext': true,
-                'cheerio': 'window',
-                'react/addons': true, // important!!
+                'react/addons': true,
             }
         },
 
         webpackServer: {
-            noInfo: true //please don't spam the console when running in karma!
+            noInfo: true // please don't spam the console when running in karma!
         },
 
         plugins: [
@@ -175,27 +89,24 @@ module.exports = function(config) {
             'karma-jasmine',
             'karma-sourcemap-loader',
             'karma-chrome-launcher',
+            'karma-firefox-launcher',
             'karma-phantomjs-launcher',
             'karma-coverage'
         ],
-
 
         babelPreprocessor: {
             options: {
                 presets: ['airbnb']
             }
         },
-        reporters: ['progress', 'coverage'],
-        coverageReporter: {
-            instrumenterOptions: {
-                istanbul: { noCompact: true }
-            }
-        },
+
+        // coverage reporter generates the coverage
+        reporters: ['coverage'],
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
         browsers: ['Chrome'],
-        singleRun: false,
+        singleRun: true,
     })
 };

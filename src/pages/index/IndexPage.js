@@ -1,22 +1,23 @@
 'use strict';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import SwitchToggle from 'components/SwitchToggle/SwitchToggle';
 
 class IndexPage extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            value: false
+        }
     }
 
-    componentDidMount() {
-        console.log(this.refs.switchTest.state.checked);
-        console.log(this.refs.switchTest2.state.checked);
-    }
+    componentDidMount() {}
 
     onChange = (checked) => {
-        console.log(checked);
+        this.setState({
+            value: checked
+        })
     }
 
     onClick = () => {
@@ -28,12 +29,20 @@ class IndexPage extends React.Component {
     }
 
     render() {
+        let valueDisplay = '';
+        if(this.state.value) {
+            valueDisplay = 'true - turn on';
+        } else {
+            valueDisplay = 'false - turn off';
+        }
+
         return (
             <div>
                 <SwitchToggle size="medium" id="test-1" ref="switchTest" checked={true} onChange={this.onChange} />
                 <SwitchToggle size="small" id="test-2" ref="switchTest2" checked={false} onChange={this.onChange} />
                 <button onClick={this.onClick}>turn on</button>
                 <button onClick={this.onTurnOff}>turn off</button>
+                <p>{ valueDisplay }</p>
             </div>
         )
     }

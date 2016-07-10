@@ -1,7 +1,9 @@
 'use strict';
 import React from 'react';
-import ReactDOM from 'react-dom';
+let injectTapEventPlugin = require('react-tap-event-plugin');
+injectTapEventPlugin();
 require('./style.scss');
+
 
 class SwitchToggle extends React.Component {
     
@@ -32,7 +34,7 @@ class SwitchToggle extends React.Component {
     }
 
     setValue(value) {
-        if(value === null || typeof(value) !== 'boolean') 
+        if(value === null || typeof(value) !== 'boolean')
             throw new Error('setValue(): arg must be boolean.');
         this.setState({ checked: value });
     }
@@ -54,8 +56,6 @@ class SwitchToggle extends React.Component {
             className: 'cmn-toggle cmn-toggle-round-flat',
             type: 'checkbox',
             checked: this.state.checked,
-            // should remove this prop, and implement set value for input
-            // check: this.props.checked, 
             onChange: this.handleChange
         };
 
